@@ -1,6 +1,6 @@
-const saveFiles = require("./script/saveFiles.js");
-const getPdir = require("./script/getPdir.js");
-const getUpdatelist = require("./script/getUpdatelist.js");
+const saveFiles = require("./script_saveFiles.js");
+const getPdir = require("./script_getPdir.js");
+const getUpdatelist = require("./script_getUpdatelist.js");
 const main = async () => {
   const list = await getUpdatelist();
   for (let index = 0; index < list.length; index++) {
