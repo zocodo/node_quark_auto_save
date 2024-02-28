@@ -1,7 +1,49 @@
 const axios = require("axios");
 const cookie = process.env.QUARK_PAN_COOKIE;
+if (!cookie) {
+  console.log(`===========没有设置夸克网盘cookie============`);
+  console.log(`===========设置步骤============`);
+  console.log(`青龙面板-环境变量, 点击创建变量`);
+  console.log(`名称输入: QUARK_PAN_COOKIE `);
+  console.log(`值输入: 夸克云盘网页版的cookie,不懂如何获取请百度`);
+  return;
+}
 
-const getPdir = async (data) => {
+const main = async () => {
+  console.log(`===========获取需要更新的订阅============`);
+  const list = await getUpdatelist();
+  
+  for (let index = 0; index < list.length; index++) {
+    const item = list[index];
+    if (item.save_as_status == 0) {
+      console.log(`⏳===========开始更新订阅============`);
+
+      const dirdata = await getPdir({
+        target_fid: item.first_fid,
+        pwd_id: item.pwd_id,
+      });
+      let fullpath = "/";
+
+      dirdata.dir.full_path.forEach((path) => {
+        fullpath += path.file_name + "/";
+      });
+      console.log(`订阅资源: ${item.title}`);
+      console.log(`保存路径: ${fullpath}`);
+      const task = saveFiles({
+        pwd_id: item.pwd_id,
+        stoken: item.stoken,
+        to_pdir_fid: dirdata.pdir_fid,
+      });
+      console.log(`===========订阅更新完成============`);
+    } else {
+      console.log(`订阅资源: ${item.title} 无需更新`);
+    }
+  }
+};
+
+main();
+
+async function getPdir(data) {
   return await axios({
     url: "https://drive-pc.quark.cn/1/clouddrive/share/sharepage/dir",
     method: "GET",
@@ -33,9 +75,9 @@ const getPdir = async (data) => {
   }).then((res) => {
     return res.data.data;
   });
-};
+}
 
-const getUpdatelist = async () => {
+async function getUpdatelist() {
   return await axios({
     url: "https://drive-pc.quark.cn/1/clouddrive/share/update_list",
     method: "post",
@@ -73,9 +115,9 @@ const getUpdatelist = async () => {
       return res.data.data.list;
     }
   });
-};
+}
 
-const saveFiles = async (data) => {
+async function saveFiles(data) {
   return await axios({
     url: "https://drive-pc.quark.cn/1/clouddrive/share/sharepage/save",
     method: "POST",
@@ -114,38 +156,4 @@ const saveFiles = async (data) => {
   }).then((res) => {
     console.log(11111, res.data.data);
   });
-};
-
-const main = async () => {
-  const list = await getUpdatelist();
-  if (!list?.length) {
-    console.log(`===========没有订阅需要更新============`);
-    return;
-  }
-  for (let index = 0; index < list.length; index++) {
-    const item = list[index];
-    if (item.save_as_status == 0) {
-      console.log(`⏳===========开始更新订阅============`);
-
-      const dirdata = await getPdir({
-        target_fid: item.first_fid,
-        pwd_id: item.pwd_id,
-      });
-      let fullpath = "/";
-
-      dirdata.dir.full_path.forEach((path) => {
-        fullpath += path.file_name + "/";
-      });
-      console.log(`订阅资源: ${item.title}`);
-      console.log(`保存路径: ${fullpath}`);
-      const task = saveFiles({
-        pwd_id: item.pwd_id,
-        stoken: item.stoken,
-        to_pdir_fid: dirdata.pdir_fid,
-      });
-      console.log(`===========订阅更新完成============`);
-    }
-  }
-};
-
-main();
+}
