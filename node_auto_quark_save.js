@@ -1,3 +1,9 @@
+/*
+  new Env('夸克自动追更');
+  cron:0 0/15 * * * ?
+  0 0/15 * * * ? node_auto_quark_save.js
+*/
+
 const axios = require("axios");
 const cookie = process.env.QUARK_PAN_COOKIE;
 if (!cookie) {
@@ -12,7 +18,7 @@ if (!cookie) {
 const main = async () => {
   console.log(`===========获取需要更新的订阅============`);
   const list = await getUpdatelist();
-  
+
   for (let index = 0; index < list.length; index++) {
     const item = list[index];
     if (item.save_as_status == 0) {
