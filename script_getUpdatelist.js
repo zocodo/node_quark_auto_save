@@ -1,5 +1,5 @@
 const axios = require("axios");
-const config = require("./config.json") 
+const cookie = process.env.QUARK_PAN_COOKIE
 
 module.exports = async () => {
   return await axios({
@@ -21,7 +21,7 @@ module.exports = async () => {
       "sec-fetch-dest": "empty",
       "sec-fetch-mode": "cors",
       "sec-fetch-site": "same-site",
-      cookie: config.cookie,
+      cookie: cookie,
       Referer: "https://pan.quark.cn/",
       "Referrer-Policy": "strict-origin-when-cross-origin",
     },
