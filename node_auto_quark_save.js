@@ -1,7 +1,6 @@
 /*
   new Env('夸克自动追更');
-  cron:0 0/15 * * * ?
-  0 0/15 * * * ? node_auto_quark_save.js
+  cron: 0 0/15 * * * ?
 */
 
 const axios = require("axios");
