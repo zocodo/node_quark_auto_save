@@ -118,10 +118,14 @@ const saveFiles = async (data) => {
 
 const main = async () => {
   const list = await getUpdatelist();
+  if (!list?.length) {
+    console.log(`===========没有订阅需要更新============`);
+    return;
+  }
   for (let index = 0; index < list.length; index++) {
     const item = list[index];
     if (item.save_as_status == 0) {
-      console.log(`===========开始更新订阅============`);
+      console.log(`⏳===========开始更新订阅============`);
 
       const dirdata = await getPdir({
         target_fid: item.first_fid,
