@@ -1,6 +1,6 @@
 /*
   new Env('夸克自动追更');
-  cron: 0 0/15 * * * ?
+  cron: 0 0/5 * * * ?
 */
 
 const axios = require("axios");
